@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String BASE_URL = "https://pics.localtunnel.me";
+    public static final String BASE_URL = "http://localhost:3000";
     private static Retrofit retrofit = null;
 
 

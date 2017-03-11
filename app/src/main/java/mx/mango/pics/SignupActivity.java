@@ -12,6 +12,12 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import mx.mango.pics.models.User;
+import mx.mango.pics.rest.ApiClient;
+import mx.mango.pics.rest.ApiInterface;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
@@ -68,6 +74,23 @@ public class SignupActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<User> call = apiService.signup(new User(null, "Jovanny Cruz", "jovannypcg@yahoo.com", "1"));
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("API", " ============================== ");
+                Log.d("API", response.body().toString());
+                Log.d("API", " ============================== ");
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
