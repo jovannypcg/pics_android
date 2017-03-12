@@ -4,13 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,6 +36,8 @@ public class HomeActivity extends AppCompatActivity {
     FloatingActionButton btnRefreshSnaps;
     @InjectView(R.id.lv_snaps)
     ListView lvSnaps;
+    @InjectView(R.id.btn_close_session)
+    Button btnCloseSession;
 
     private Realm realm;
     private User currentUser;
@@ -72,6 +71,12 @@ public class HomeActivity extends AppCompatActivity {
                 retrieveSnaps();
             }
         });
+        this.btnCloseSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeSession();
+            }
+        });
 
         snapListAdapter = new SnapListAdapter(this, snaps);
         lvSnaps.setAdapter(snapListAdapter);
@@ -102,12 +107,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void refreshSnaps(List<ApiSnap> _snaps) {
-        Log.d("SNAPS", "===================");
-        for(ApiSnap snap : _snaps) {
-            Log.d("SNAP", snap.toString());
-        }
-        Log.d("SNAPS", "===================");
-
         snapListAdapter.getSnaps().clear();
         snapListAdapter.getSnaps().addAll(_snaps);
         snapListAdapter.notifyDataSetChanged();
@@ -116,6 +115,21 @@ public class HomeActivity extends AppCompatActivity {
     private void navigateToSnap() {
         Intent snapIntent = new Intent(this, SnapActivity.class);
         startActivity(snapIntent);
+    }
+
+    private void closeSession() {
+        final RealmResults<User> results = realm.where(User.class).findAll();
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteAllFromRealm();
+            }
+        });
+
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
     }
 
     public User getCurrentUser() {
