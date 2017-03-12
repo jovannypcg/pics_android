@@ -47,21 +47,21 @@
         android:id="@+id/et_cause"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="20"
+        android:layout_weight="10"
         android:hint="@string/add_cause"/>
 
     <EditText
         android:id="@+id/et_description"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="20"
+        android:layout_weight="10"
         android:hint="@string/add_description"/>
 
     <Button
         android:id="@+id/btn_send_snap"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="10"
+        android:layout_weight="30"
         android:text="@string/send"/>
 
 </LinearLayout>
