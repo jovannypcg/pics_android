@@ -89,9 +89,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
+                Toast.makeText(this, "Registro satisfactorio", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import mx.mango.pics.models.User;
+import mx.mango.pics.models.ApiUser;
 import mx.mango.pics.rest.ApiClient;
 import mx.mango.pics.rest.ApiInterface;
 import retrofit2.Call;
@@ -57,7 +57,7 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignupFailed("Verifique los datos");
             return;
         }
 
@@ -76,34 +76,38 @@ public class SignupActivity extends AppCompatActivity {
         // TODO: Implement your own signup logic here.
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<User> call = apiService.signup(new User(null, "Jovanny Cruz", "jovannypcg@yahoo.com", "1"));
+        Call<ApiUser> call = apiService.signup(new ApiUser(null, name, email, password));
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<ApiUser>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<ApiUser> call, Response<ApiUser> response) {
                 Log.d("API", " ============================== ");
-                Log.d("API", response.body().toString());
+                Log.d("API", "Status code: " + response.code());
+                Log.d("API", "Is response body null?: " + (response.body() == null));
+                Log.d("API", "Response: " + response.body());
                 Log.d("API", " ============================== ");
+
+                switch (response.code()) {
+                    case 200:
+                        onSignupSuccess();
+                        break;
+                    case 409:
+                        onSignupFailed("Usuario ya registrado");
+                        break;
+                    default:
+                        onSignupFailed("Registro incorrecto");
+                }
+
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
+            public void onFailure(Call<ApiUser> call, Throwable t) {
+                onSignupFailed("Login failed");
+                progressDialog.dismiss();
             }
         });
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
     }
-
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
@@ -111,8 +115,8 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+    public void onSignupFailed(String msg) {
+        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }

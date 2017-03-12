@@ -2,7 +2,7 @@ package mx.mango.pics.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+public class ApiUser {
     @SerializedName("_id")
     private String id;
     @SerializedName("first_name")
@@ -11,8 +11,10 @@ public class User {
     private String email;
     @SerializedName("password")
     private String password;
+    @SerializedName("token")
+    private String token;
 
-    public User(String id, String firstName, String email, String password) {
+    public ApiUser(String id, String firstName, String email, String password) {
         this.id = id;
         this.firstName = firstName;
         this.email = email;
@@ -49,6 +51,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
