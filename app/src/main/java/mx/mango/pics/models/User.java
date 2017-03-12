@@ -1,25 +1,12 @@
 package mx.mango.pics.models;
 
-import com.google.gson.annotations.SerializedName;
+import io.realm.RealmObject;
 
-public class ApiUser {
-    @SerializedName("_id")
+public class User extends RealmObject {
     private String id;
-    @SerializedName("first_name")
     private String firstName;
-    @SerializedName("email")
     private String email;
-    @SerializedName("password")
-    private String password;
-    @SerializedName("token")
     private String token;
-
-    public ApiUser(String id, String firstName, String email, String password) {
-        this.id = id;
-        this.firstName = firstName;
-        this.email = email;
-        this.password = password;
-    }
 
     public String getId() {
         return id;
@@ -45,14 +32,6 @@ public class ApiUser {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getToken() {
         return token;
     }
@@ -63,6 +42,6 @@ public class ApiUser {
 
     @Override
     public String toString() {
-        return this.id + " -> " + this.firstName  + " -> " + this.email;
+        return this.id + " ---> " + this.firstName + " ---> " + this.email + " ---> " + this.token;
     }
 }
