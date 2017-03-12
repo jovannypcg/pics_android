@@ -140,7 +140,7 @@ public class ApiSnap {
     @Override
     public String toString() {
         return user + " ---> " + this.cause + " ---> " + this.description +
-                " ---> " + this.pics + " ---> " + this.phoneBrand + " ---> " +
+                " ---> " + " ---> " + this.phoneBrand + " ---> " +
                 this.phoneDevice + " ---> " + this.phoneManufacturer + " ---> " +
                 this.phoneModel + " ---> " + this.phoneOSVersion + " ---> " +
                 this.phoneSerial;

@@ -1,5 +1,6 @@
 package mx.mango.pics;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,14 +11,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import mx.mango.pics.adapter.SnapListAdapter;
 import mx.mango.pics.models.ApiSnap;
 import mx.mango.pics.models.User;
 import mx.mango.pics.rest.ApiClient;
@@ -33,15 +37,21 @@ public class HomeActivity extends AppCompatActivity {
     FloatingActionButton btnAddSnap;
     @InjectView(R.id.btn_refresh_snaps)
     FloatingActionButton btnRefreshSnaps;
+    @InjectView(R.id.lv_snaps)
+    ListView lvSnaps;
 
     private Realm realm;
     private User currentUser;
+    private List<ApiSnap> snaps;
+    private SnapListAdapter snapListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
+
+        snaps = new ArrayList<>();
 
         Realm.init(this);
         realm = Realm.getDefaultInstance();
@@ -50,30 +60,38 @@ public class HomeActivity extends AppCompatActivity {
         Log.d("HOME", this.currentUser.toString());
 
         this.tvFirstName.setText(this.currentUser.getFirstName());
-
         this.btnAddSnap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 navigateToSnap();
             }
         });
-
         this.btnRefreshSnaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 retrieveSnaps();
             }
         });
+
+        snapListAdapter = new SnapListAdapter(this, snaps);
+        lvSnaps.setAdapter(snapListAdapter);
     }
 
     private void retrieveSnaps() {
+        final ProgressDialog progressDialog = new ProgressDialog(HomeActivity.this,
+                R.style.AppTheme);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Actualizando...");
+        progressDialog.show();
+
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<List<ApiSnap>> call = apiService.getSnaps(currentUser.getId());
 
         call.enqueue(new Callback<List<ApiSnap>>() {
             @Override
             public void onResponse(Call<List<ApiSnap>> call, Response<List<ApiSnap>> response) {
-
+                refreshSnaps(response.body());
+                progressDialog.dismiss();
             }
 
             @Override
@@ -81,6 +99,18 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("SNAPS", "Algo falló");
             }
         });
+    }
+
+    public void refreshSnaps(List<ApiSnap> _snaps) {
+        Log.d("SNAPS", "===================");
+        for(ApiSnap snap : _snaps) {
+            Log.d("SNAP", snap.toString());
+        }
+        Log.d("SNAPS", "===================");
+
+        snapListAdapter.getSnaps().clear();
+        snapListAdapter.getSnaps().addAll(_snaps);
+        snapListAdapter.notifyDataSetChanged();
     }
 
     private void navigateToSnap() {
