@@ -18,10 +18,9 @@
         android:textAlignment="center"
         android:textStyle="bold" />
 
-    <ScrollView
+    <ListView
+        android:id="@+id/lv_snaps"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="90">
-
-    </ScrollView>
+        android:layout_weight="90" />
 </LinearLayout>

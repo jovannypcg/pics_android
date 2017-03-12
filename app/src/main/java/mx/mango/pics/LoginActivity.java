@@ -46,6 +46,11 @@ public class LoginActivity extends AppCompatActivity {
         Realm.init(this);
         realm = Realm.getDefaultInstance();
 
+        if (isUserAlreadyLogged()) {
+            navigateToHome();
+            return;
+        }
+
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -63,6 +68,10 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
+    }
+
+    private boolean isUserAlreadyLogged() {
+        return realm.where(User.class).findAll().size() != 0;
     }
 
     public void login() {
@@ -142,9 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         deleteCurrentSavedUser();
         saveUser(apiUser);
 
-        Intent homeIntent = new Intent(this, HomeActivity.class);
-        startActivity(homeIntent);
-        finish();
+        navigateToHome();
     }
 
     public void onLoginFailed(String msg) {
@@ -202,5 +209,11 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    private void navigateToHome() {
+        Intent homeIntent = new Intent(this, HomeActivity.class);
+        startActivity(homeIntent);
+        finish();
     }
 }

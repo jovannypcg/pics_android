@@ -20,6 +20,10 @@ import mx.mango.pics.models.User;
 public class HomeActivity extends AppCompatActivity {
     @InjectView(R.id.tv_user_first_name)
     TextView tvFirstName;
+    @InjectView(R.id.btn_add_snap)
+    FloatingActionButton btnAddSnap;
+    @InjectView(R.id.btn_refresh_snaps)
+    FloatingActionButton btnRefreshSnaps;
 
     private Realm realm;
     private User currentUser;
@@ -36,6 +40,20 @@ public class HomeActivity extends AppCompatActivity {
         Log.d("HOME", this.currentUser.toString());
 
         this.tvFirstName.setText(this.currentUser.getFirstName());
+
+        this.btnAddSnap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        this.btnRefreshSnaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public User getCurrentUser() {
