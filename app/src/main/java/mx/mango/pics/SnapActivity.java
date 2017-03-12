@@ -1,5 +1,6 @@
 package mx.mango.pics;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -7,7 +8,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -22,6 +27,14 @@ public class SnapActivity extends AppCompatActivity {
     ImageButton picThree;
     @InjectView(R.id.ib_pic_four)
     ImageButton picFour;
+    @InjectView(R.id.btn_send_snap)
+    Button btnSendSnap;
+    @InjectView(R.id.sp_location)
+    Spinner spLocation;
+    @InjectView(R.id.et_cause)
+    EditText etCause;
+    @InjectView(R.id.et_description)
+    EditText etDescription;
 
     private static final int CAMERA_REQUEST_PIC_ONE = 1;
     private static final int CAMERA_REQUEST_PIC_TWO = 2;
@@ -63,6 +76,62 @@ public class SnapActivity extends AppCompatActivity {
                 capturePicture(view);
             }
         });
+        btnSendSnap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendSnap();
+            }
+        });
+    }
+
+    private void sendSnap() {
+        Log.d("SNAP", "Sending ==========");
+
+        if (!validate()) {
+            onSendindFailed("Verificar datos");
+            return;
+        }
+
+        btnSendSnap.setEnabled(false);
+
+        final ProgressDialog progressDialog = new ProgressDialog(SnapActivity.this,
+                R.style.AppTheme);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Enviando");
+        progressDialog.show();
+
+        String cause = etCause.getText().toString();
+        String description = etDescription.getText().toString();
+        String location = spLocation.getSelectedItem().toString();
+    }
+
+    public void onSendindFailed(String msg) {
+        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+
+        btnSendSnap.setEnabled(true);
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String description = etDescription.getText().toString();
+        String cause = etCause.getText().toString();
+
+        if (description.isEmpty()) {
+            etDescription.setError("Ingresa un email válido");
+            valid = false;
+        } else {
+            etDescription.setError(null);
+        }
+
+        if (cause.isEmpty()) {
+            etCause.setError("Debe ser entre 4 y 10 caracteres");
+            valid = false;
+        } else {
+            etCause.setError(null);
+        }
+
+        return valid;
     }
 
     public void capturePicture(View view) {
