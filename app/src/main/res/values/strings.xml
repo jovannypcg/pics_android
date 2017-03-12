@@ -11,5 +11,15 @@
     <string-array name="locations">
         <item>Iztapalapa</item>
         <item>Xochimilco</item>
+        <item>Gustavo A. Madero</item>
+        <item>Alvaro Obregón</item>
+        <item>Azcapotzalco</item>
+        <item>Benito Juarez</item>
+        <item>Coyoacán</item>
+        <item>Cuajimalpa</item>
+        <item>Cuauhtémoc</item>
+        <item>Iztacalco</item>
+        <item>Magdalena Contreras</item>
+        <item>Miguel Hidalgo</item>
     </string-array>
 </resources>

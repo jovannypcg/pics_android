@@ -11,20 +11,27 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="40"
+        android:layout_height="wrap_content"
+        android:layout_weight="30"
         android:gravity="center_horizontal">
         <TableRow>
             <ImageButton
-                android:src="@mipmap/ic_launcher"/>
+                android:id="@+id/ib_pic_one"
+                android:src="@mipmap/ic_launcher" />
             <ImageButton
-                android:src="@mipmap/ic_launcher"/>
+                android:id="@+id/ib_pic_two"
+                android:src="@mipmap/ic_launcher"
+                android:onClick="capturePicTwo"/>
         </TableRow>
         <TableRow>
             <ImageButton
-                android:src="@mipmap/ic_launcher"/>
+                android:id="@+id/ib_pic_three"
+                android:src="@mipmap/ic_launcher"
+                android:onClick="capturePicThree"/>
             <ImageButton
-                android:src="@mipmap/ic_launcher"/>
+                android:id="@+id/ib_pic_four"
+                android:src="@mipmap/ic_launcher"
+                android:onClick="capturePicFour"/>
         </TableRow>
     </TableLayout>
 
