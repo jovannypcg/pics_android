@@ -3,6 +3,8 @@ package mx.mango.pics;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +16,21 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
+import mx.mango.pics.models.ApiSnap;
+import mx.mango.pics.models.ApiUser;
+import mx.mango.pics.models.User;
+import mx.mango.pics.rest.ApiClient;
+import mx.mango.pics.rest.ApiInterface;
+import mx.mango.pics.utils.StringUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SnapActivity extends AppCompatActivity {
     @InjectView(R.id.ib_pic_one)
@@ -36,6 +50,8 @@ public class SnapActivity extends AppCompatActivity {
     @InjectView(R.id.et_description)
     EditText etDescription;
 
+    private User currentUser;
+
     private static final int CAMERA_REQUEST_PIC_ONE = 1;
     private static final int CAMERA_REQUEST_PIC_TWO = 2;
     private static final int CAMERA_REQUEST_PIC_THREE = 3;
@@ -51,6 +67,9 @@ public class SnapActivity extends AppCompatActivity {
 
         Realm.init(this);
         realm = Realm.getDefaultInstance();
+
+        this.currentUser = getCurrentUser();
+        Log.d("SNAP", this.currentUser.toString());
 
         picOne.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,12 +116,67 @@ public class SnapActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(SnapActivity.this,
                 R.style.AppTheme);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Enviando");
+        progressDialog.setMessage("Enviando...");
         progressDialog.show();
+
+        Bitmap bmPicOne = ((BitmapDrawable)picOne.getDrawable()).getBitmap();
+        Bitmap bmPicTwo = ((BitmapDrawable)picTwo.getDrawable()).getBitmap();
+        Bitmap bmPicThree = ((BitmapDrawable)picThree.getDrawable()).getBitmap();
+        Bitmap bmPicFour = ((BitmapDrawable)picFour.getDrawable()).getBitmap();
 
         String cause = etCause.getText().toString();
         String description = etDescription.getText().toString();
         String location = spLocation.getSelectedItem().toString();
+
+        String strPicOne = StringUtils.bitmapToBase64(bmPicOne);
+        String strPicTwo = StringUtils.bitmapToBase64(bmPicTwo);
+        String strPicThree = StringUtils.bitmapToBase64(bmPicThree);
+        String strPicFour = StringUtils.bitmapToBase64(bmPicFour);
+
+        String phoneSerial = Build.SERIAL;
+        String phoneModel = Build.MODEL;
+        String phoneBrand = Build.BRAND;
+        String phoneDevice = Build.DEVICE;
+        String phoneManufacturer = Build.MANUFACTURER;
+        String phoneOSVersion = Build.VERSION.INCREMENTAL;
+
+        List<String> pics = new ArrayList<>();
+        pics.add(strPicOne);
+        pics.add(strPicTwo);
+        pics.add(strPicThree);
+        pics.add(strPicFour);
+
+        ApiSnap apiSnap = new ApiSnap(null, currentUser.getId(), pics, location, cause,
+                description, phoneOSVersion, phoneBrand, phoneManufacturer, phoneModel,
+                phoneSerial, phoneDevice);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiSnap> call = apiService.createSnap(apiSnap);
+
+        call.enqueue(new Callback<ApiSnap>() {
+            @Override
+            public void onResponse(Call<ApiSnap> call, Response<ApiSnap> response) {
+                Log.d("LOGIN", " ============================== ");
+                Log.d("LOGIN", "Status code: " + response.code());
+                Log.d("LOGIN", "Is response body null?: " + (response.body() == null));
+                Log.d("LOGIN", "Response: " + response.body());
+                Log.d("LOGIN", " ============================== ");
+
+                onSendingSuccess();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ApiSnap> call, Throwable t) {
+                onSendindFailed("Error al enviar información");
+            }
+        });
+    }
+
+    public void onSendingSuccess() {
+        btnSendSnap.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Información enviada", Toast.LENGTH_LONG).show();
+        finish();
     }
 
     public void onSendindFailed(String msg) {
@@ -118,14 +192,14 @@ public class SnapActivity extends AppCompatActivity {
         String cause = etCause.getText().toString();
 
         if (description.isEmpty()) {
-            etDescription.setError("Ingresa un email válido");
+            etDescription.setError("Ingresa una descripción");
             valid = false;
         } else {
             etDescription.setError(null);
         }
 
         if (cause.isEmpty()) {
-            etCause.setError("Debe ser entre 4 y 10 caracteres");
+            etCause.setError("Ingresa un motivo");
             valid = false;
         } else {
             etCause.setError(null);
@@ -185,5 +259,9 @@ public class SnapActivity extends AppCompatActivity {
                 picFour.setImageBitmap(imageBitmap);
                 break;
         }
+    }
+
+    public User getCurrentUser() {
+        return realm.where(User.class).findAll().first();
     }
 }

@@ -30,6 +30,25 @@ public class ApiSnap {
     @SerializedName("ph_device")
     private String phoneDevice;
 
+    public ApiSnap() {}
+    public ApiSnap(String id, String user, List<String> pics, String location, String cause,
+                   String description, String phoneOSVersion, String phoneBrand,
+                   String phoneManufacturer, String phoneModel, String phoneSerial,
+                   String phoneDevice) {
+        this.id = id;
+        this.user = user;
+        this.pics = pics;
+        this.location = location;
+        this.cause = cause;
+        this.description = description;
+        this.phoneOSVersion = phoneOSVersion;
+        this.phoneBrand = phoneBrand;
+        this.phoneManufacturer = phoneManufacturer;
+        this.phoneModel = phoneModel;
+        this.phoneSerial = phoneSerial;
+        this.phoneDevice = phoneDevice;
+    }
+
     public String getUser() {
         return user;
     }
