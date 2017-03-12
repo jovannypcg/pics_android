@@ -12,11 +12,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import mx.mango.pics.models.ApiSnap;
 import mx.mango.pics.models.User;
+import mx.mango.pics.rest.ApiClient;
+import mx.mango.pics.rest.ApiInterface;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
     @InjectView(R.id.tv_user_first_name)
@@ -28,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private Realm realm;
     private User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +61,24 @@ public class HomeActivity extends AppCompatActivity {
         this.btnRefreshSnaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                retrieveSnaps();
+            }
+        });
+    }
 
+    private void retrieveSnaps() {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<List<ApiSnap>> call = apiService.getSnaps(currentUser.getId());
+
+        call.enqueue(new Callback<List<ApiSnap>>() {
+            @Override
+            public void onResponse(Call<List<ApiSnap>> call, Response<List<ApiSnap>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ApiSnap>> call, Throwable t) {
+                Log.d("SNAPS", "Algo falló");
             }
         });
     }
