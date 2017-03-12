@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,7 +12,6 @@ import android.widget.ImageButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.realm.Realm;
-import mx.mango.pics.R;
 
 public class SnapActivity extends AppCompatActivity {
     @InjectView(R.id.ib_pic_one)
@@ -121,8 +117,4 @@ public class SnapActivity extends AppCompatActivity {
                 break;
         }
     }
-
-    public void capturePicTwo(View view) {}
-    public void capturePicThree(View view) {}
-    public void capturePicFour(View view) {}
 }

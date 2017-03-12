@@ -17,21 +17,22 @@
         <TableRow>
             <ImageButton
                 android:id="@+id/ib_pic_one"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="@string/app_name"/>
             <ImageButton
                 android:id="@+id/ib_pic_two"
                 android:src="@mipmap/ic_launcher"
-                android:onClick="capturePicTwo"/>
+                android:contentDescription="@string/app_name"/>
         </TableRow>
         <TableRow>
             <ImageButton
                 android:id="@+id/ib_pic_three"
                 android:src="@mipmap/ic_launcher"
-                android:onClick="capturePicThree"/>
+                android:contentDescription="@string/app_name"/>
             <ImageButton
                 android:id="@+id/ib_pic_four"
                 android:src="@mipmap/ic_launcher"
-                android:onClick="capturePicFour"/>
+                android:contentDescription="@string/app_name"/>
         </TableRow>
     </TableLayout>
 
