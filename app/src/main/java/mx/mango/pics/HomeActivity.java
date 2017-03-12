@@ -1,5 +1,6 @@
 package mx.mango.pics;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -44,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         this.btnAddSnap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                navigateToSnap();
             }
         });
 
@@ -54,6 +55,11 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void navigateToSnap() {
+        Intent snapIntent = new Intent(this, SnapActivity.class);
+        startActivity(snapIntent);
     }
 
     public User getCurrentUser() {
