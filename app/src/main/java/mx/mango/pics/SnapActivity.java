@@ -169,6 +169,7 @@ public class SnapActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ApiSnap> call, Throwable t) {
                 onSendindFailed("Error al enviar información");
+                progressDialog.dismiss();
             }
         });
     }
